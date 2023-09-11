@@ -4,11 +4,11 @@ from datetime import datetime
 
 class User(db.Model):
     __tablename__ = 'user'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(255), unique=False, nullable=False)
-    email = db.Column(db.String(255), unique=False, nullable=True)
-    password = db.Column(db.String(255), unique=False, nullable=True)
-    note = db.Column(db.String(255), unique=False, nullable=True)
+    id = db.Column(db.Integer, primary_key=True, comment="用户id")
+    username = db.Column(db.String(255), unique=False, nullable=False, comment="用户名")
+    email = db.Column(db.String(255), unique=False, nullable=True, comment="邮箱")
+    password = db.Column(db.String(255), unique=False, nullable=True, comment="密码")
+    note = db.Column(db.String(255), unique=False, nullable=True, comment="备注")
     create_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     delete_time = db.Column(db.DateTime, default=None, nullable=True)
