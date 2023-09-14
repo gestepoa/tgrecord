@@ -35,6 +35,7 @@ class BasicInfo(db.Model):
     delete_time = db.Column(db.DateTime, default=None, nullable=True)
     eduinfo = db.relationship('EduInfo', backref='basicinfo', lazy='dynamic')
     familyinfo = db.relationship('Family', backref='basicinfo', lazy='dynamic')
+    resumeinfo = db.relationship('Resume', backref='basicinfo', lazy='dynamic')
 
     def __repr__(self):
         return '<BasicInfo %r>' % self.name
@@ -75,3 +76,23 @@ class Family(db.Model):
 
     def __repr__(self):
         return '<family %r>' % self.name
+
+
+class Resume(db.Model):
+    __tablename__ = 'resume'
+
+    id = db.Column(db.Integer, primary_key=True, comment="履历信息id")
+    target = db.Column(db.String(255), unique=False, nullable=False, comment="目标人物")
+    province = db.Column(db.String(255), unique=False, nullable=True, comment="所在省份")
+    local = db.Column(db.DateTime, unique=False, nullable=True, comment="所在县市")
+    govpos = db.Column(db.String(255), unique=False, nullable=True, comment="职务")
+    domains = db.Column(db.String(255), unique=False, nullable=True, comment="领域")
+    time = db.Column(db.Integer, unique=False, nullable=True, comment="起始年份")
+    duration = db.Column(db.Integer, unique=False, nullable=True, comment="持续时间（年）")
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    delete_time = db.Column(db.DateTime, default=None, nullable=True)
+    basic_info_id = db.Column(db.Integer, db.ForeignKey('basic_info.id'))
+
+    def __repr__(self):
+        return '<resume %r>' % self.target
