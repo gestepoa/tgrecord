@@ -16,7 +16,8 @@ add_resource(user_blueprint, config)
 # basic_info
 basic_info_blueprint = Blueprint('basic_info', __name__, url_prefix='/basic_info')
 basic_info_config = [
-    (views.BasicInfoView, '/')
+    (views.BasicInfoViewQuery, '/query'),
+    (views.BasicInfoViewAdd, '/add')
 ]
 
 add_resource(basic_info_blueprint, basic_info_config)
