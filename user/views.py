@@ -21,7 +21,7 @@ class UserView(Resource):
 # BasicInfo
 class BasicInfoViewQuery(Resource):
 
-    def get(self):
+    def post(self):
         results = BasicInfo.query.all()
         data = []
         for result in results:
@@ -59,8 +59,17 @@ class BasicInfoViewQuery(Resource):
 class BasicInfoViewAdd(Resource):
 
     def post(self):
-        data = json.loads(request.data)
-        result = BasicInfo(name=data.get('name'))
-        db.session.add(result)
-        db.session.commit()
-        return db_util.query_to_dict(result)
+        try:
+            data = json.loads(request.data)
+            result = BasicInfo(name=data.get('name'), birth=data.get('birth'), birthday=data.get('birthday'))
+            db.session.add(result)
+            db.session.commit()
+            return {
+                'message': 'success',
+                'status': 200
+            }
+        except Exception as e:
+            return {
+                'message': 'DataBase error: {}'.format(str(e)),
+                'status': 500
+            }

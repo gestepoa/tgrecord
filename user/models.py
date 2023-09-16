@@ -21,14 +21,15 @@ class BasicInfo(db.Model):
     __tablename__ = 'basic_info'
 
     id = db.Column(db.Integer, primary_key=True, comment="基础信息id")
-    name = db.Column(db.String(255), unique=False, nullable=False, comment="姓名")
+    name = db.Column(db.String(255), unique=True, nullable=False, comment="姓名")
     gender = db.Column(db.String(255), unique=False, nullable=True, comment="性别")
     ethnic = db.Column(db.String(255), unique=False, nullable=True, comment="民族")
     ancestral_province = db.Column(db.String(255), unique=False, nullable=True, comment="籍贯省份")
     ancestral_local = db.Column(db.String(255), unique=False, nullable=True, comment="籍贯县市")
     birthplace_province = db.Column(db.String(255), unique=False, nullable=True, comment="出生省份")
     birthplace_local = db.Column(db.String(255), unique=False, nullable=True, comment="出生县市")
-    birthday = db.Column(db.DateTime, unique=False, nullable=True, comment="出生年份")
+    birth = db.Column(db.String(255), unique=False, nullable=True, comment="出生年份")
+    birthday = db.Column(db.Date, unique=False, nullable=True, comment="出生日期")
     participate = db.Column(db.Integer, unique=False, nullable=True, comment="入党年份")
     create_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)

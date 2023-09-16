@@ -63,3 +63,11 @@ def convert_datetime(value):
             return value.strftime("%H:%M:%S")
     else:
         return ""
+
+
+def convert_to_date(date_str):
+    try:
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d").date()
+        return date_obj
+    except ValueError:
+        return "date format error, please use 'YYYY-MM-DD'."
