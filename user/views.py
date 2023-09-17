@@ -82,3 +82,23 @@ class BasicInfoViewAdd(Resource):
                 'message': 'DataBase error: {}'.format(str(e)),
                 'status': 500
             }
+
+
+class BasicInfoViewUpdate(Resource):
+
+    def post(self):
+        try:
+            data = json.loads(request.data)
+            params_id = data.get('id')
+            result = BasicInfo.query.filter_by(id=params_id).first()
+            result.ethnic = data.get('ethnic')
+            db.session.commit()
+            return {
+                'message': 'success',
+                'status': 200
+            }
+        except Exception as e:
+            return {
+                'message': 'DataBase error: {}'.format(str(e)),
+                'status': 500
+            }
