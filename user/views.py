@@ -20,13 +20,20 @@ class UserView(Resource):
 
 # BasicInfo
 class BasicInfoViewQuery(Resource):
+    
+    def get_request(self, request_data):
+        if request_data.data.decode('utf-8') == '':
+            params = {}
+        else: 
+            params = request_data.json
+        return params
 
     def post(self):
         try:
-            params = json.loads(request.data)
+            params = self.get_request(request)
             page = params.get('page', 1)
             per_page = params.get('per_page', 10)
-            results = BasicInfo.query.paginate(page=page, per_page=per_page)
+            results = BasicInfo.query.order_by(BasicInfo.id.desc()).paginate(page=page, per_page=per_page)
             data = []
             for result in results:
                 # 获取子表1内容
