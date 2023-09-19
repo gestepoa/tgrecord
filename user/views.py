@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from user.models import User, BasicInfo
+from user.models import User, BasicInfo,EduInfo,Family
 from database import db
 from utils import db_util
 from flask import request, jsonify
@@ -11,6 +11,9 @@ class UserView(Resource):
     def get(self):
         users = User.query.filter().all()
         return db_util.query_to_dict(users)
+        # results = db.session.query(BasicInfo, EduInfo, Family).join(EduInfo).join(Family).all()
+        # for result in results:
+        #     print(result)
 
     def post(self):
         data = json.loads(request.data)
@@ -28,12 +31,27 @@ class BasicInfoViewQuery(Resource):
             params = request_data.json
         return params
 
+    def get_relationships(self, model_name):
+        relation = []
+        all_relationships = model_name.__mapper__.relationships
+        for relationship in all_relationships:
+            relation.append(relationship.key)
+        return relation
+
     def post(self):
         try:
             params = self.get_request(request)
+            #get filter_conditions
+            valid_keys = [key for key in params if key in BasicInfo.__table__.columns]
+            filter_conditions = {key: params[key] for key in valid_keys}
+            print(filter_conditions)
+            # get relation
+            relation = self.get_relationships(BasicInfo)
+            print(relation)
+            # get pagination
             page = params.get('page', 1)
             per_page = params.get('per_page', 10)
-            results = BasicInfo.query.order_by(BasicInfo.id.desc()).paginate(page=page, per_page=per_page)
+            results = BasicInfo.query.filter_by(**filter_conditions).order_by(BasicInfo.id.desc()).paginate(page=page, per_page=per_page)
             data = []
             for result in results:
                 # 获取子表1内容
