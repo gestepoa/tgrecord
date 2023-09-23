@@ -9,7 +9,7 @@ import json
 class UserView(Resource):
 
     def get(self):
-        users = EduInfo.query.filter().all()
+        users = User.query.filter().all()
         return db_util.query_to_dict(users)
 
     def post(self):
@@ -134,6 +134,51 @@ class BasicInfoViewDelete(Resource):
             return {
                 'message': 'success',
                 'status': 200
+            }
+        except Exception as e:
+            return {
+                'message': 'DataBase error: {}'.format(str(e)),
+                'status': 500
+            }
+
+class BasicInfoViewQuery2(Resource):
+
+    def post(self):
+        try:
+            query = db.session.query(BasicInfo)
+            query1 = query.outerjoin(BasicInfo.familyinfo)
+            query2 = query1.outerjoin(BasicInfo.eduinfo)
+            results = query2.all()
+            data = []
+            for result in results:
+                results_familyinfo = []
+                for familyinfo in result.familyinfo:
+                    results_familyinfo_single = {
+                        "id": familyinfo.id,
+                        "name": familyinfo.name,
+                        "relation": familyinfo.relation
+                    }
+                    results_familyinfo.append(results_familyinfo_single)
+                results_eduinfo = []
+                for eduinfo in result.eduinfo:
+                    results_eduinfo_single = {
+                        "id": eduinfo.id,
+                        "level": eduinfo.level,
+                        "school_name": eduinfo.school_name
+                    }
+                    results_eduinfo.append(results_eduinfo_single)
+                result_data = {
+                    "id": result.id,
+                    'name': result.name,
+                    "gender": result.gender,
+                    "ethnic": result.ethnic,
+                    'familyinfo': results_familyinfo,
+                    'eduinfo': results_eduinfo
+                }
+                data.append(result_data)
+            return {
+                "status": 200,
+                "data": data
             }
         except Exception as e:
             return {
