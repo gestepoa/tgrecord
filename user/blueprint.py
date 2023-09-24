@@ -19,8 +19,7 @@ basic_info_config = [
     (views.BasicInfoViewQuery, '/query'),
     (views.BasicInfoViewAdd, '/add'),
     (views.BasicInfoViewUpdate, '/update'),
-    (views.BasicInfoViewDelete, '/delete'),
-    (views.BasicInfoViewQuery2, '/query2')
+    (views.BasicInfoViewDelete, '/delete')
 ]
 
 add_resource(basic_info_blueprint, basic_info_config)
