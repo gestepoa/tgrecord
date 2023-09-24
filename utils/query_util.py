@@ -14,3 +14,19 @@ def get_sub(main_table_class):
         print(relationship)
         print('this is the class name')
         print(sub_class_name.mapper.class_.__name__)
+
+
+def get_request(table_class, request_data):
+    if request_data.data.decode('utf-8') == '':
+        filter_conditions = {}
+        relation_conditions = {}
+        paginate_conditions = {}
+    else: 
+        params = request_data.json
+        valid_keys = [key for key in params if key in table_class.__table__.columns]
+        relation_keys = [key for key in params if key in table_class.__mapper__.relationships]
+        paginate_keys = [key for key in params if key in ["page", "per_page"]]
+        filter_conditions = {key: params[key] for key in valid_keys}
+        relation_conditions = {key: params[key] for key in relation_keys}
+        paginate_conditions = {key: params[key] for key in paginate_keys}
+    return filter_conditions, relation_conditions, paginate_conditions

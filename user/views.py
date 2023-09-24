@@ -21,27 +21,11 @@ class UserView(Resource):
 # BasicInfo
 class BasicInfoViewQuery(Resource):
     
-    def get_request(self, request_data):
-        if request_data.data.decode('utf-8') == '':
-            filter_conditions = {}
-            relation_conditions = {}
-            paginate_conditions = {}
-        else: 
-            params = request_data.json
-            valid_keys = [key for key in params if key in BasicInfo.__table__.columns]
-            relation_keys = [key for key in params if key in BasicInfo.__mapper__.relationships]
-            paginate_keys = [key for key in params if key in ["page", "per_page"]]
-            filter_conditions = {key: params[key] for key in valid_keys}
-            relation_conditions = {key: params[key] for key in relation_keys}
-            paginate_conditions = {key: params[key] for key in paginate_keys}
-        return filter_conditions, relation_conditions, paginate_conditions
-
     def post(self):
         try:
-            filter_conditions, relation_conditions, paginate_conditions = self.get_request(request)    
+            filter_conditions, relation_conditions, paginate_conditions = query_util.get_request(BasicInfo, request)
             page = paginate_conditions.get('page', 1)
             per_page = paginate_conditions.get('per_page', 10)
-            # results = BasicInfo.query.filter_by(**filter_conditions).order_by(BasicInfo.id.desc()).paginate(page=page, per_page=per_page)
             results = db.session.query(BasicInfo).filter_by(**filter_conditions).order_by(BasicInfo.id.desc()).paginate(page=page, per_page=per_page)
             data = []
             for result in results:
