@@ -85,7 +85,7 @@ class Resume(db.Model):
     id = db.Column(db.Integer, primary_key=True, comment="履历信息id")
     target = db.Column(db.String(255), unique=False, nullable=False, comment="目标人物")
     province = db.Column(db.String(255), unique=False, nullable=True, comment="所在省份")
-    local = db.Column(db.DateTime, unique=False, nullable=True, comment="所在县市")
+    local = db.Column(db.String(255), unique=False, nullable=True, comment="所在县市")
     govpos = db.Column(db.String(255), unique=False, nullable=True, comment="职务")
     domains = db.Column(db.String(255), unique=False, nullable=True, comment="领域")
     time = db.Column(db.Integer, unique=False, nullable=True, comment="起始年份")
@@ -97,3 +97,20 @@ class Resume(db.Model):
 
     def __repr__(self):
         return '<resume %r>' % self.target
+
+
+class Position(db.Model):
+    __tablename__ = 'position'
+
+    id = db.Column(db.Integer, primary_key=True, comment="职务信息id")
+    name = db.Column(db.String(255), unique=False, nullable=True, comment="姓名")
+    position_name = db.Column(db.String(255), unique=False, nullable=True, comment="职务名称")
+    position_domains = db.Column(db.String(255), unique=False, nullable=True, comment="职务领域")
+    position_level = db.Column(db.String(255), unique=False, nullable=True, comment="职务等级")
+    note = db.Column(db.String(255), unique=False, nullable=True, comment="说明")
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    delete_time = db.Column(db.DateTime, default=None, nullable=True)
+
+    def __repr__(self):
+        return '<posiiton %r>' % self.position_name
