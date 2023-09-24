@@ -24,9 +24,12 @@ class BasicInfoViewQuery(Resource):
     def post(self):
         try:
             filter_conditions, relation_conditions, paginate_conditions = query_util.get_request(BasicInfo, request)
+            # results = db.session.query(BasicInfo).filter_by(**filter_conditions).order_by(BasicInfo.id.desc()).paginate(page=page, per_page=per_page)
+            query = db.session.query(BasicInfo).filter_by(**filter_conditions).order_by(BasicInfo.id.desc())
+            count = query.count()
             page = paginate_conditions.get('page', 1)
             per_page = paginate_conditions.get('per_page', 10)
-            results = db.session.query(BasicInfo).filter_by(**filter_conditions).order_by(BasicInfo.id.desc()).paginate(page=page, per_page=per_page)
+            results = query.paginate(page=page, per_page=per_page)
             data = []
             for result in results:
                 # get familyinfo record
@@ -61,7 +64,14 @@ class BasicInfoViewQuery(Resource):
                     'eduinfo': results_eduinfo
                 }
                 data.append(result_data)
-            return jsonify(data)
+            # return jsonify(data)
+            return {
+                'message': 'success',
+                'status': 200,
+                'data': data,
+                'count': count,
+                'page': page
+            }
         except Exception as e:
             return {
                 'message': 'DataBase error: {}'.format(str(e)),
