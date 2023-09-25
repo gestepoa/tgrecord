@@ -2,8 +2,9 @@ from flask_restful import Resource
 from user.models import User, BasicInfo,EduInfo,Family
 from database import db
 from utils import db_util, query_util
-from flask import request, jsonify
+from flask import request
 import json
+import math
 
 # User
 class UserView(Resource):
@@ -24,11 +25,15 @@ class BasicInfoViewQuery(Resource):
     def post(self):
         try:
             filter_conditions, relation_conditions, paginate_conditions = query_util.get_request(BasicInfo, request)
-            # results = db.session.query(BasicInfo).filter_by(**filter_conditions).order_by(BasicInfo.id.desc()).paginate(page=page, per_page=per_page)
             query = db.session.query(BasicInfo).filter_by(**filter_conditions).order_by(BasicInfo.id.desc())
             count = query.count()
             page = paginate_conditions.get('page', 1)
             per_page = paginate_conditions.get('per_page', 10)
+            if math.ceil(count/per_page) < page:
+                return {
+                    'message': 'error: page exceed count',
+                    'status': 501
+                }
             results = query.paginate(page=page, per_page=per_page)
             data = []
             for result in results:
@@ -64,7 +69,6 @@ class BasicInfoViewQuery(Resource):
                     'eduinfo': results_eduinfo
                 }
                 data.append(result_data)
-            # return jsonify(data)
             return {
                 'message': 'success',
                 'status': 200,
@@ -83,8 +87,14 @@ class BasicInfoViewAdd(Resource):
 
     def post(self):
         try:
-            data = json.loads(request.data)
-            result = BasicInfo(name=data.get('name'), birth=data.get('birth'), birthday=data.get('birthday'))
+            filter_conditions, relation_conditions, paginate_conditions = query_util.get_request(BasicInfo, request)
+            result = BasicInfo(
+                name=filter_conditions.get('name', ''), 
+                gender=filter_conditions.get('gender', ''), 
+                ethnic=filter_conditions.get('ethnic', ''),
+                birth=filter_conditions.get('birth', ''),
+                birthday=filter_conditions.get('birthday', '')
+            )
             db.session.add(result)
             db.session.commit()
             return {
