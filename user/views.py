@@ -93,8 +93,27 @@ class BasicInfoViewAdd(Resource):
                 gender=filter_conditions.get('gender', ''), 
                 ethnic=filter_conditions.get('ethnic', ''),
                 birth=filter_conditions.get('birth', ''),
-                birthday=filter_conditions.get('birthday', '')
+                birthday=filter_conditions.get('birthday')
             )
+            # add eduinfo
+            eduinfo_conditions = relation_conditions.get("eduinfo")
+            if eduinfo_conditions:
+                for eduinfo_condition in eduinfo_conditions:
+                    eduinfo_result = EduInfo(
+                        level=eduinfo_condition.get('level'),
+                        school_name=eduinfo_condition.get('school_name')
+                    )
+                    result.eduinfo.append(eduinfo_result)
+            # add familyinfo
+            familyinfo_conditions = relation_conditions.get("familyinfo")
+            if familyinfo_conditions:
+                for familyinfo_condition in familyinfo_conditions:
+                    familyinfo_result = Family(
+                        name=familyinfo_condition.get('name'),
+                        relation=familyinfo_condition.get('relation')
+                    )
+                    result.familyinfo.append(familyinfo_result)
+            # add all
             db.session.add(result)
             db.session.commit()
             return {
