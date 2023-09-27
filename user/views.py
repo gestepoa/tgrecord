@@ -88,6 +88,11 @@ class BasicInfoViewAdd(Resource):
     def post(self):
         try:
             filter_conditions, relation_conditions, paginate_conditions = query_util.get_request(BasicInfo, request)
+            if not filter_conditions:
+                return {
+                    'message': 'error: request body empty',
+                    'status': 501
+                }
             result = BasicInfo(
                 name=filter_conditions.get('name', ''), 
                 gender=filter_conditions.get('gender', ''), 
