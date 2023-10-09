@@ -21,6 +21,7 @@ class BasicInfo(db.Model):
     __tablename__ = 'basic_info'
 
     id = db.Column(db.Integer, primary_key=True, comment="基础信息id")
+    code = db.Column(db.String(255), unique=True, nullable=True, comment="编号")
     name = db.Column(db.String(255), unique=True, nullable=False, comment="姓名")
     gender = db.Column(db.String(255), unique=False, nullable=True, comment="性别")
     ethnic = db.Column(db.String(255), unique=False, nullable=True, comment="民族")
