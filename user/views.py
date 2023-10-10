@@ -94,7 +94,8 @@ class BasicInfoViewAdd(Resource):
                     'status': 501
                 }
             result = BasicInfo(
-                name=filter_conditions.get('name', ''), 
+                name=filter_conditions.get('name', ''),
+                code=query_util.generate_random_code(filter_conditions),
                 gender=filter_conditions.get('gender', ''), 
                 ethnic=filter_conditions.get('ethnic', ''),
                 birth=filter_conditions.get('birth', ''),

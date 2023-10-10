@@ -1,3 +1,5 @@
+import random
+import string
 
 def check_dict_equality(dict1, dict2):
     for key, value1 in dict1.items():
@@ -30,3 +32,10 @@ def get_request(table_class, request_data):
         relation_conditions = {key: params[key] for key in relation_keys}
         paginate_conditions = {key: params[key] for key in paginate_keys}
     return filter_conditions, relation_conditions, paginate_conditions
+
+
+def generate_random_code(filter_conditions):
+    code_back = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+    birthday = filter_conditions.get('birthday')
+    code_front = 'ID' + birthday.replace('-', '')
+    return code_front + code_back
