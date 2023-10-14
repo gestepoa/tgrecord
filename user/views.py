@@ -137,10 +137,32 @@ class BasicInfoViewUpdate(Resource):
 
     def post(self):
         try:
-            data = json.loads(request.data)
-            params_id = data.get('id')
+            filter_conditions, relation_conditions, paginate_conditions = query_util.get_request(BasicInfo, request)
+            if not filter_conditions.get('id'):
+                return {
+                    'message': 'error: upodate id empty',
+                    'status': 502
+                }
+            params_id = filter_conditions.get('id')
             result = BasicInfo.query.filter_by(id=params_id).first()
-            result.ethnic = data.get('ethnic')
+            if filter_conditions.get("gender"):
+                result.gender = filter_conditions.get("gender")
+            if filter_conditions.get("ethnic"):
+                result.ethnic = filter_conditions.get("ethnic")
+            if filter_conditions.get("ancestral_province"):
+                result.ancestral_province = filter_conditions.get("ancestral_province")
+            if filter_conditions.get("ancestral_local"):
+                result.ancestral_local = filter_conditions.get("ancestral_local")
+            if filter_conditions.get("birthplace_province"):
+                result.birthplace_province = filter_conditions.get("birthplace_province")
+            if filter_conditions.get("birthplace_local"):
+                result.birthplace_local = filter_conditions.get("birthplace_local")
+            if filter_conditions.get("birth"):
+                result.birth = filter_conditions.get("birth")
+            if filter_conditions.get("birthday"):
+                result.birthday = filter_conditions.get("birthday")
+            if filter_conditions.get("participate"):
+                result.participate = filter_conditions.get("participate")
             db.session.commit()
             return {
                 'message': 'success',
