@@ -140,9 +140,10 @@ class BasicInfoViewUpdate(Resource):
             filter_conditions, relation_conditions, paginate_conditions = query_util.get_request(BasicInfo, request)
             if not filter_conditions.get('id'):
                 return {
-                    'message': 'error: upodate id empty',
+                    'message': 'error: basic_info update id empty',
                     'status': 502
                 }
+            # basic_info
             params_id = filter_conditions.get('id')
             result = BasicInfo.query.filter_by(id=params_id).first()
             if filter_conditions.get("gender"):
@@ -163,6 +164,63 @@ class BasicInfoViewUpdate(Resource):
                 result.birthday = filter_conditions.get("birthday")
             if filter_conditions.get("participate"):
                 result.participate = filter_conditions.get("participate")
+            # edu_info
+            eduinfo_conditions = relation_conditions.get("eduinfo")
+            if eduinfo_conditions:
+                for eduinfo_condition in eduinfo_conditions:
+                    if not eduinfo_condition.get("id"):
+                        eduinfo_result = EduInfo(
+                            level=eduinfo_condition.get('level'),
+                            school_province=eduinfo_condition.get('school_province'),
+                            school_local=eduinfo_condition.get('school_local'),
+                            school_name=eduinfo_condition.get('school_name'),
+                            enrollment=eduinfo_condition.get('enrollment'),
+                            isnational=eduinfo_condition.get('isnational'),
+                            remarks=eduinfo_condition.get('remarks'),
+                            basic_info_id=params_id
+                        )
+                        db.session.add(eduinfo_result)
+                    else:
+                        eduinfo_id = eduinfo_condition.get('id')
+                        eduinfo_result = EduInfo.query.filter_by(id=eduinfo_id).first()
+                        if eduinfo_condition.get("level"):
+                            eduinfo_result.level = eduinfo_condition.get("level")
+                        if eduinfo_condition.get("school_province"):
+                            eduinfo_result.school_province = eduinfo_condition.get("school_province")
+                        if eduinfo_condition.get("school_local"):
+                            eduinfo_result.school_local = eduinfo_condition.get("school_local")
+                        if eduinfo_condition.get("school_name"):
+                            eduinfo_result.school_name = eduinfo_condition.get("school_name")
+                        if eduinfo_condition.get("enrollment"):
+                            eduinfo_result.enrollment = eduinfo_condition.get("enrollment")
+                        if eduinfo_condition.get("isnational"):
+                            eduinfo_result.isnational = eduinfo_condition.get("isnational")
+                        if eduinfo_condition.get("remarks"):
+                            eduinfo_result.remarks = eduinfo_condition.get("remarks")
+            # family_info
+            familyinfo_conditions = relation_conditions.get("familyinfo")
+            if familyinfo_conditions:
+                for familyinfo_condition in familyinfo_conditions:
+                    if not familyinfo_condition.get("id"):
+                        familyinfo_result = Family(
+                            name=familyinfo_condition.get('name'),
+                            relation=familyinfo_condition.get('relation'),
+                            birthday=familyinfo_condition.get('birthday'),
+                            remarks=familyinfo_condition.get('remarks'),
+                            basic_info_id=params_id
+                        )
+                        db.session.add(familyinfo_result)
+                    else:
+                        familyinfo_id = familyinfo_condition.get('id')
+                        familyinfo_result = Family.query.filter_by(id=familyinfo_id).first()
+                        if familyinfo_condition.get("name"):
+                            familyinfo_result.name = familyinfo_condition.get("name")
+                        if familyinfo_condition.get("relation"):
+                            familyinfo_result.relation = familyinfo_condition.get("relation")
+                        if familyinfo_condition.get("birthday"):
+                            familyinfo_result.birthday = familyinfo_condition.get("birthday")
+                        if familyinfo_condition.get("remarks"):
+                            familyinfo_result.remarks = familyinfo_condition.get("remarks")
             db.session.commit()
             return {
                 'message': 'success',
