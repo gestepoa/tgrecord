@@ -94,12 +94,17 @@ class BasicInfoViewAdd(Resource):
                     'status': 501
                 }
             result = BasicInfo(
-                name=filter_conditions.get('name', ''),
+                name=filter_conditions.get('name'),
                 code=query_util.generate_random_code(filter_conditions),
-                gender=filter_conditions.get('gender', ''), 
-                ethnic=filter_conditions.get('ethnic', ''),
-                birth=filter_conditions.get('birth', ''),
-                birthday=filter_conditions.get('birthday')
+                gender=filter_conditions.get('gender'), 
+                ethnic=filter_conditions.get('ethnic'),
+                ancestral_province=filter_conditions.get('ancestral_province'),
+                ancestral_local=filter_conditions.get('ancestral_local'),
+                birthplace_province=filter_conditions.get('birthplace_province'),
+                birthplace_local=filter_conditions.get('birthplace_local'),
+                birth=filter_conditions.get('birth'),
+                birthday=filter_conditions.get('birthday'),
+                participate=filter_conditions.get('participate')
             )
             # add eduinfo
             eduinfo_conditions = relation_conditions.get("eduinfo")
@@ -107,7 +112,12 @@ class BasicInfoViewAdd(Resource):
                 for eduinfo_condition in eduinfo_conditions:
                     eduinfo_result = EduInfo(
                         level=eduinfo_condition.get('level'),
-                        school_name=eduinfo_condition.get('school_name')
+                        school_province=eduinfo_condition.get('school_province'),
+                        school_local=eduinfo_condition.get('school_local'),
+                        school_name=eduinfo_condition.get('school_name'),
+                        enrollment=eduinfo_condition.get('enrollment'),
+                        isnational=eduinfo_condition.get('isnational'),
+                        remarks=eduinfo_condition.get('remarks')
                     )
                     result.eduinfo.append(eduinfo_result)
             # add familyinfo
@@ -116,7 +126,9 @@ class BasicInfoViewAdd(Resource):
                 for familyinfo_condition in familyinfo_conditions:
                     familyinfo_result = Family(
                         name=familyinfo_condition.get('name'),
-                        relation=familyinfo_condition.get('relation')
+                        relation=familyinfo_condition.get('relation'),
+                        birthday=familyinfo_condition.get('birthday'),
+                        remarks=familyinfo_condition.get('remarks')
                     )
                     result.familyinfo.append(familyinfo_result)
             # add all
@@ -146,6 +158,10 @@ class BasicInfoViewUpdate(Resource):
             # basic_info
             params_id = filter_conditions.get('id')
             result = BasicInfo.query.filter_by(id=params_id).first()
+            if filter_conditions.get("name"):
+                result.name = filter_conditions.get("name")
+            if filter_conditions.get("code"):
+                result.code = filter_conditions.get("code")
             if filter_conditions.get("gender"):
                 result.gender = filter_conditions.get("gender")
             if filter_conditions.get("ethnic"):
@@ -169,6 +185,11 @@ class BasicInfoViewUpdate(Resource):
             if eduinfo_conditions:
                 for eduinfo_condition in eduinfo_conditions:
                     if not eduinfo_condition.get("id"):
+                        if db.session.query(EduInfo).filter_by(**eduinfo_condition).first():
+                            return{
+                                'message': 'error: edu_info record already exist',
+                                'status': 503
+                            }
                         eduinfo_result = EduInfo(
                             level=eduinfo_condition.get('level'),
                             school_province=eduinfo_condition.get('school_province'),
@@ -202,6 +223,11 @@ class BasicInfoViewUpdate(Resource):
             if familyinfo_conditions:
                 for familyinfo_condition in familyinfo_conditions:
                     if not familyinfo_condition.get("id"):
+                        if db.session.query(Family).filter_by(**familyinfo_condition).first():
+                            return{
+                                'message': 'error: family_info record already exist',
+                                'status': 503
+                            }
                         familyinfo_result = Family(
                             name=familyinfo_condition.get('name'),
                             relation=familyinfo_condition.get('relation'),
