@@ -185,11 +185,6 @@ class BasicInfoViewUpdate(Resource):
             if eduinfo_conditions:
                 for eduinfo_condition in eduinfo_conditions:
                     if not eduinfo_condition.get("id"):
-                        if db.session.query(EduInfo).filter_by(**eduinfo_condition).first():
-                            return{
-                                'message': 'error: edu_info record already exist',
-                                'status': 503
-                            }
                         eduinfo_result = EduInfo(
                             level=eduinfo_condition.get('level'),
                             school_province=eduinfo_condition.get('school_province'),
