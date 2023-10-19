@@ -37,7 +37,7 @@ class BasicInfo(db.Model):
     delete_time = db.Column(db.DateTime, default=None, nullable=True)
     eduinfo = db.relationship('EduInfo', backref='basicinfo', lazy='dynamic', cascade='all, delete-orphan')
     familyinfo = db.relationship('Family', backref='basicinfo', lazy='dynamic', cascade='all, delete-orphan')
-    resumeinfo = db.relationship('Resume', backref='basicinfo', lazy='dynamic')
+    resumeinfo = db.relationship('Resume', backref='basicinfo', lazy='dynamic', cascade='all, delete-orphan')
 
     def __repr__(self):
         return '<BasicInfo %r>' % self.name
