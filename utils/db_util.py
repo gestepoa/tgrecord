@@ -1,15 +1,15 @@
-from datetime import datetime  # 有时候会返回datatime类型
+from datetime import datetime
 from datetime import date, time
-from flask_sqlalchemy import Model
-from sqlalchemy import DateTime, Numeric, Date, Time  # 有时又是DateTime
+from flask_sqlalchemy import model
+from sqlalchemy import DateTime, Numeric, Date, Time
 
 
 def query_to_dict(models):
     if isinstance(models, list):
-        if isinstance(models[0], Model):
+        if isinstance(models[0], model.Model):
             lst = []
-            for model in models:
-                gen = model_to_dict(model)
+            for model_one in models:
+                gen = model_to_dict(model_one)
                 dit = dict((g[0], g[1]) for g in gen)
                 lst.append(dit)
             return lst
@@ -17,7 +17,7 @@ def query_to_dict(models):
             res = result_to_dict(models)
             return res
     else:
-        if isinstance(models, Model):
+        if isinstance(models, model.Model):
             gen = model_to_dict(models)
             dit = dict((g[0], g[1]) for g in gen)
             return dit
