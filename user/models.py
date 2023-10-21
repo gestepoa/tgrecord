@@ -38,7 +38,7 @@ class BasicInfo(db.Model):
     eduinfo = db.relationship('EduInfo', backref='basicinfo', lazy='dynamic', cascade='all, delete-orphan')
     familyinfo = db.relationship('Family', backref='basicinfo', lazy='dynamic', cascade='all, delete-orphan')
     resumeinfo = db.relationship('Resume', backref='basicinfo', lazy='dynamic', cascade='all, delete-orphan')
-    ideologyinfo = db.relationship('Ideology', backref='basicinfo', lazy='dynamic', cascade='all, delete-orphan', uselist=False)
+    ideologyinfo = db.relationship('Ideology', backref='basicinfo', lazy='select', cascade='all, delete-orphan', uselist=False)
 
     def __repr__(self):
         return '<BasicInfo %r>' % self.name
