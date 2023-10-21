@@ -38,6 +38,7 @@ class BasicInfo(db.Model):
     eduinfo = db.relationship('EduInfo', backref='basicinfo', lazy='dynamic', cascade='all, delete-orphan')
     familyinfo = db.relationship('Family', backref='basicinfo', lazy='dynamic', cascade='all, delete-orphan')
     resumeinfo = db.relationship('Resume', backref='basicinfo', lazy='dynamic', cascade='all, delete-orphan')
+    ideologyinfo = db.relationship('Ideology', backref='basicinfo', lazy='dynamic', cascade='all, delete-orphan', uselist=False)
 
     def __repr__(self):
         return '<BasicInfo %r>' % self.name
@@ -115,3 +116,23 @@ class Position(db.Model):
 
     def __repr__(self):
         return '<posiiton %r>' % self.position_name
+
+
+class Ideology(db.Model):
+    __tablename__ = 'ideology'
+
+    id = db.Column(db.Integer, primary_key=True, comment="意识形态id")
+    orientation = db.Column(db.Enum('激进', '保守', '不作为'), unique=False, nullable=True, comment="政治倾向")
+    economic_view = db.Column(db.Enum('国家资本主义', '自由经济', '斯大林模式'), unique=False, nullable=True, comment="经济观点")
+    nation_view = db.Column(db.Enum('汉族主义', '完整公民权', '中华民族'), unique=False, nullable=True, comment="民族观点")
+    war_view = db.Column(db.Enum('沙文主义', '和平主义'), unique=False, nullable=True, comment="战争观点")
+    political_view = db.Column(db.Enum('精英政治', '民粹主义'), unique=False, nullable=True, comment="政治观点")
+    ideology_cpc = db.Column(db.Enum('毛泽东思想', '中国特色社会主义', '新时代思想'), unique=False, nullable=True, comment="中共意识形态")
+    family_background = db.Column(db.Enum('贵族', '平民'), unique=False, nullable=True, comment="家庭出身")
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    delete_time = db.Column(db.DateTime, default=None, nullable=True)
+    basic_info_id = db.Column(db.Integer, db.ForeignKey('basic_info.id'))
+
+    def __repr__(self):
+        return '<ideology %r>' % self.orientation
