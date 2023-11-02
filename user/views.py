@@ -5,6 +5,7 @@ from utils import db_util, query_util
 from flask import request
 import json
 import math
+import os
 
 # User
 class UserView(Resource):
@@ -88,6 +89,25 @@ class BasicInfoViewAdd(Resource):
     def post(self):
         try:
             filter_conditions, relation_conditions, paginate_conditions = query_util.get_request(BasicInfo, request)
+            # profile photo uploaded
+            # if 'file' not in request.files:
+            #     return {
+            #         'message': 'error: No file part',
+            #         'status': 508
+            #     }
+            # profile_photo = request.files['file']
+            # current_directory = os.getcwd()
+            # UPLOAD_FOLDER = os.path.join(current_directory, 'static', 'profile_photo')
+            # if profile_photo and query_util.allowed_file(profile_photo.filename):
+            #     print(profile_photo.filename)
+            #     profile_photo.save(os.path.join(UPLOAD_FOLDER, profile_photo.filename))
+            #     print('File uploaded successfully')
+            # else:
+            #     return {
+            #         'message': 'error: Invalid file type',
+            #         'status': 509
+            #     }
+
             if not filter_conditions:
                 return {
                     'message': 'error: request body empty',

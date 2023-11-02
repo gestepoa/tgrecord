@@ -39,3 +39,8 @@ def generate_random_code(filter_conditions):
     birthday = filter_conditions.get('birthday')
     code_front = 'ID' + birthday.replace('-', '')
     return code_front + code_back
+
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

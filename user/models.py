@@ -23,6 +23,7 @@ class BasicInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True, comment="基础信息id")
     code = db.Column(db.String(255), unique=True, nullable=True, comment="编号")
     name = db.Column(db.String(255), unique=True, nullable=False, comment="姓名")
+    profile_photo = db.Column(db.String(255), unique=False, nullable=True, comment="头像")
     gender = db.Column(db.String(255), unique=False, nullable=True, comment="性别")
     ethnic = db.Column(db.String(255), unique=False, nullable=True, comment="民族")
     ancestral_province = db.Column(db.String(255), unique=False, nullable=True, comment="籍贯省份")
