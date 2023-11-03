@@ -6,6 +6,8 @@ from flask import request
 import json
 import math
 import os
+from werkzeug.utils import secure_filename
+from config import DevConfig
 
 # User
 class UserView(Resource):
@@ -89,25 +91,6 @@ class BasicInfoViewAdd(Resource):
     def post(self):
         try:
             filter_conditions, relation_conditions, paginate_conditions = query_util.get_request(BasicInfo, request)
-            # profile photo uploaded
-            # if 'file' not in request.files:
-            #     return {
-            #         'message': 'error: No file part',
-            #         'status': 508
-            #     }
-            # profile_photo = request.files['file']
-            # current_directory = os.getcwd()
-            # UPLOAD_FOLDER = os.path.join(current_directory, 'static', 'profile_photo')
-            # if profile_photo and query_util.allowed_file(profile_photo.filename):
-            #     print(profile_photo.filename)
-            #     profile_photo.save(os.path.join(UPLOAD_FOLDER, profile_photo.filename))
-            #     print('File uploaded successfully')
-            # else:
-            #     return {
-            #         'message': 'error: Invalid file type',
-            #         'status': 509
-            #     }
-
             if not filter_conditions:
                 return {
                     'message': 'error: request body empty',
@@ -284,6 +267,33 @@ class BasicInfoViewDelete(Resource):
             db.session.commit()
             return {
                 'message': 'success',
+                'status': 200
+            }
+        except Exception as e:
+            return {
+                'message': 'DataBase error: {}'.format(str(e)),
+                'status': 500
+            }
+
+class Upload(Resource):
+
+    def allowed_file(self, filename):
+        ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+        return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+    def post(self):
+        try:
+            # UPLOAD_FOLDER = os.getcwd()
+            # UPLOAD_FOLDER = './static/profile_photo'
+            UPLOAD_FOLDER = DevConfig.UPLOAD_FOLDER
+            if request.method == 'POST':
+                file = request.files['file']
+                if file and self.allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(UPLOAD_FOLDER, filename))
+            return {
+                'message': 'upload success',
                 'status': 200
             }
         except Exception as e:
