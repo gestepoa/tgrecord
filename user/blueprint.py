@@ -20,7 +20,8 @@ basic_info_config = [
     (views.BasicInfoViewAdd, '/add'),
     (views.BasicInfoViewUpdate, '/update'),
     (views.BasicInfoViewDelete, '/delete'),
-    (views.Upload, '/upload')
+    (views.Upload, '/upload'),
+    (views.UploadFile, '/upload/file')
 ]
 
 add_resource(basic_info_blueprint, basic_info_config)

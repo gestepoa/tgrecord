@@ -301,3 +301,29 @@ class Upload(Resource):
                 'message': 'DataBase error: {}'.format(str(e)),
                 'status': 500
             }
+        
+class UploadFile(Resource):
+
+    def allowed_file(self, filename):
+        # ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+        # return '.' in filename and \
+        #    filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+        return True
+
+    def post(self):
+        try:
+            UPLOAD_FOLDER = './static/geojson'
+            if request.method == 'POST':
+                file = request.files['file']
+                if file and self.allowed_file(file.filename):
+                    # filename = secure_filename(file.filename)
+                    file.save(os.path.join(UPLOAD_FOLDER, file.filename))
+            return {
+                'message': 'upload success',
+                'status': 200
+            }
+        except Exception as e:
+            return {
+                'message': 'DataBase error: {}'.format(str(e)),
+                'status': 500
+            }
