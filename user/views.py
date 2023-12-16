@@ -284,14 +284,22 @@ class Upload(Resource):
 
     def post(self):
         try:
-            # UPLOAD_FOLDER = os.getcwd()
-            # UPLOAD_FOLDER = './static/profile_photo'
+            params_id = request.form.get('id')
+            result = BasicInfo.query.filter_by(id=params_id).first()
+            if not result:
+                return {
+                    'message': 'error: person not found',
+                    'status': 404
+                }
+
             UPLOAD_FOLDER = DevConfig.UPLOAD_FOLDER
             if request.method == 'POST':
                 file = request.files['file']
                 if file and self.allowed_file(file.filename):
                     filename = secure_filename(file.filename)
                     file.save(os.path.join(UPLOAD_FOLDER, filename))
+                    result.profile_photo = filename
+                    db.session.commit()
             return {
                 'message': 'upload success',
                 'status': 200
@@ -312,6 +320,8 @@ class UploadFile(Resource):
 
     def post(self):
         try:
+            # UPLOAD_FOLDER = os.getcwd()
+            # UPLOAD_FOLDER = './static/profile_photo'
             UPLOAD_FOLDER = './static/geojson'
             if request.method == 'POST':
                 file = request.files['file']
