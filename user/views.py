@@ -40,36 +40,73 @@ class BasicInfoViewQuery(Resource):
             results = query.paginate(page=page, per_page=per_page)
             data = []
             for result in results:
-                # get familyinfo record
+
+                # get familyinfo record, one-to-many
                 results_familyinfo = []
                 familyinfo_params = relation_conditions.get('familyinfo', {})
                 for family in result.familyinfo:
                     results_familyinfo_single = {
                         "id": family.id,
                         "name": family.name,
-                        "relation": family.relation
+                        "relation": family.relation,
+                        "birthday": str(family.birthday),
+                        "remarks": family.remarks
                     }
                     if query_util.check_dict_equality(results_familyinfo_single, familyinfo_params):
                         results_familyinfo.append(results_familyinfo_single)
-                # get eduinfo record
+
+                # get eduinfo record, one-to-many
                 results_eduinfo = []
                 eduinfo_params = relation_conditions.get('eduinfo', {})
                 for eduinfo in result.eduinfo:
                     results_eduinfo_single = {
                         "id": eduinfo.id,
                         "level": eduinfo.level,
-                        "school_name": eduinfo.school_name
+                        "school_name": eduinfo.school_name,
+                        "school_province": eduinfo.school_province,
+                        "school_local": eduinfo.school_local,
+                        "enrollment": str(eduinfo.enrollment),
+                        "isnational": eduinfo.isnational,
+                        "remarks": eduinfo.remarks
                     }
                     if query_util.check_dict_equality(results_eduinfo_single, eduinfo_params):
                         results_eduinfo.append(results_eduinfo_single)
+
+                # get ideology record, one-to-one
+                ideologyinfo_params = relation_conditions.get('ideologyinfo', {})
+                results_ideologyinfo = {}
+                if result.ideologyinfo:
+                    results_ideologyinfo_temp = {
+                        "id": result.ideologyinfo.id,
+                        "orientation": result.ideologyinfo.orientation,
+                        "economic_view": result.ideologyinfo.economic_view,
+                        "nation_view": result.ideologyinfo.nation_view,
+                        "war_view": result.ideologyinfo.war_view,
+                        "political_view": result.ideologyinfo.political_view,
+                        "ideology_cpc": result.ideologyinfo.ideology_cpc,
+                        "family_background": result.ideologyinfo.family_background
+                    }
+                    if query_util.check_dict_equality(results_ideologyinfo_temp, ideologyinfo_params):
+                        results_ideologyinfo = results_ideologyinfo_temp
+
                 # get main table record
                 result_data = {
                     "id": result.id,
                     'name': result.name,
+                    "code": result.code,
+                    "profile_photo": result.profile_photo,
                     "gender": result.gender,
                     "ethnic": result.ethnic,
+                    "ancestral_province": result.ancestral_province,
+                    "ancestral_local": result.ancestral_local,
+                    "birthplace_province": result.birthplace_province,
+                    "birthplace_local": result.birthplace_local,
+                    "birth": result.birth,
+                    "birthday": str(result.birthday),
+                    "participate": result.participate,
                     'familyinfo': results_familyinfo,
-                    'eduinfo': results_eduinfo
+                    'eduinfo': results_eduinfo,
+                    'ideologyinfo': results_ideologyinfo
                 }
                 data.append(result_data)
             return {
