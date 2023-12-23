@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from user.models import User, BasicInfo,EduInfo,Family
+from user.models import User, BasicInfo,EduInfo,Family, Ideology
 from database import db
 from utils import db_util, query_util
 from flask import request
@@ -171,6 +171,22 @@ class BasicInfoViewAdd(Resource):
                         remarks=familyinfo_condition.get('remarks')
                     )
                     result.familyinfo.append(familyinfo_result)
+            
+            # add ideologyinfo
+            ideologyinfo_conditions = relation_conditions.get("ideologyinfo")
+            if ideologyinfo_conditions:
+                ideologyinfo_result = Ideology(
+                    orientation=ideologyinfo_conditions.get('orientation'),
+                    economic_view=ideologyinfo_conditions.get('economic_view'),
+                    nation_view=ideologyinfo_conditions.get('nation_view'),
+                    war_view=ideologyinfo_conditions.get('war_view'),
+                    political_view=ideologyinfo_conditions.get('political_view'),
+                    ideology_cpc=ideologyinfo_conditions.get('ideology_cpc'),
+                    family_background=ideologyinfo_conditions.get('family_background')
+                )
+                print(ideologyinfo_result)
+                result.ideologyinfo = ideologyinfo_result
+            
             # add all
             db.session.add(result)
             db.session.commit()
