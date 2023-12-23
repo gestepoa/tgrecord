@@ -211,6 +211,7 @@ class BasicInfoViewUpdate(Resource):
                     'message': 'error: basic_info update id empty',
                     'status': 502
                 }
+            
             # basic_info
             params_id = filter_conditions.get('id')
             result = BasicInfo.query.filter_by(id=params_id).first()
@@ -236,6 +237,7 @@ class BasicInfoViewUpdate(Resource):
                 result.birthday = filter_conditions.get("birthday")
             if filter_conditions.get("participate"):
                 result.participate = filter_conditions.get("participate")
+            
             # edu_info
             eduinfo_conditions = relation_conditions.get("eduinfo")
             if eduinfo_conditions:
@@ -269,6 +271,7 @@ class BasicInfoViewUpdate(Resource):
                             eduinfo_result.isnational = eduinfo_condition.get("isnational")
                         if eduinfo_condition.get("remarks"):
                             eduinfo_result.remarks = eduinfo_condition.get("remarks")
+            
             # family_info
             familyinfo_conditions = relation_conditions.get("familyinfo")
             if familyinfo_conditions:
@@ -298,6 +301,46 @@ class BasicInfoViewUpdate(Resource):
                             familyinfo_result.birthday = familyinfo_condition.get("birthday")
                         if familyinfo_condition.get("remarks"):
                             familyinfo_result.remarks = familyinfo_condition.get("remarks")
+
+            # ideologyinfo_info
+            ideologyinfo_conditions = relation_conditions.get("ideologyinfo")
+            if ideologyinfo_conditions:
+                if not result.ideologyinfo and not ideologyinfo_conditions.get("id"):
+                    ideologyinfo_result = Ideology(
+                        orientation=ideologyinfo_conditions.get('orientation'),
+                        economic_view=ideologyinfo_conditions.get('economic_view'),
+                        nation_view=ideologyinfo_conditions.get('nation_view'),
+                        war_view=ideologyinfo_conditions.get('war_view'),
+                        political_view=ideologyinfo_conditions.get('political_view'),
+                        ideology_cpc=ideologyinfo_conditions.get('ideology_cpc'),
+                        family_background=ideologyinfo_conditions.get('family_background'),
+                        basic_info_id=params_id
+                    )
+                    db.session.add(ideologyinfo_result)
+                elif result.ideologyinfo and ideologyinfo_conditions.get("id"):
+                    ideologyinfo_id = ideologyinfo_conditions.get('id')
+                    ideologyinfo_result = Ideology.query.filter_by(id=ideologyinfo_id).first()
+                    if ideologyinfo_conditions.get("orientation"):
+                        ideologyinfo_result.orientation = ideologyinfo_conditions.get("orientation")
+                    if ideologyinfo_conditions.get("economic_view"):
+                        ideologyinfo_result.economic_view = ideologyinfo_conditions.get("economic_view")
+                    if ideologyinfo_conditions.get("nation_view"):
+                        ideologyinfo_result.nation_view = ideologyinfo_conditions.get("nation_view")
+                    if ideologyinfo_conditions.get("war_view"):
+                        ideologyinfo_result.war_view = ideologyinfo_conditions.get("war_view")
+                    if ideologyinfo_conditions.get("political_view"):
+                        ideologyinfo_result.political_view = ideologyinfo_conditions.get("political_view")
+                    if ideologyinfo_conditions.get("ideology_cpc"):
+                        ideologyinfo_result.ideology_cpc = ideologyinfo_conditions.get("ideology_cpc")
+                    if ideologyinfo_conditions.get("family_background"):
+                        ideologyinfo_result.family_background = ideologyinfo_conditions.get("family_background")
+                else:
+                    return {
+                        'message': 'error: ideology info record already exist',
+                        'status': 504
+                    }
+            
+            # submit
             db.session.commit()
             return {
                 'message': 'success',
