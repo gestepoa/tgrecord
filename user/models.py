@@ -110,6 +110,8 @@ class Position(db.Model):
     position_name = db.Column(db.String(255), unique=False, nullable=True, comment="职务名称")
     position_domains = db.Column(db.String(255), unique=False, nullable=True, comment="职务领域")
     position_level = db.Column(db.String(255), unique=False, nullable=True, comment="职务等级")
+    general_min_age = db.Column(db.String(255), unique=False, nullable=True, comment="一般年龄下限")
+    general_max_age = db.Column(db.String(255), unique=False, nullable=True, comment="一般年龄上限")
     note = db.Column(db.String(255), unique=False, nullable=True, comment="说明")
     create_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
